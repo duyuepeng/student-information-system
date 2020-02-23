@@ -1,0 +1,874 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is a sample Student Information System server.
+    Source Code: [github.com/duyuepeng/student-information-system](https://github.com/duyuepeng/student-information-system)
+  version: "0.5.0"
+  title: Student Information System
+  contact:
+    email: du.yuep@husky.neu.edu
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'http://sis.duyuepeng.me/webapi'
+  - description: Localhost
+    url: http://localhost:8080/webapi
+tags:
+  - name: professor
+    description: Professor Information
+  - name: course
+    description: Course Information
+  - name: student
+    description: Student Information
+  - name: program
+    description: Program Information
+  - name: lecture
+    description: Lecture Information
+
+paths:
+  /programs:
+    post:
+      tags:
+        - program
+      summary: Add a new program to the system
+      operationId: addProgram
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Program'
+    get:
+      tags:
+        - program
+      summary: Get Programs
+      operationId: getPrograms
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+  '/programs/{programId}':
+    put:
+      tags:
+        - program
+      summary: Update an existing program
+      operationId: updateProgram
+      parameters:
+        - name: programId
+          in: path
+          description: ID of program to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Program/properties/programId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Program not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/Program'
+    get:
+      tags:
+        - program
+      summary: Find program by ID
+      description: Returns a single program
+      operationId: getProgram
+      parameters:
+        - name: programId
+          in: path
+          description: ID of program to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Program/properties/programId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Program not found
+    delete:
+      tags:
+        - program
+      summary: Deletes a program
+      operationId: deleteProgram
+      parameters:
+        - name: programId
+          in: path
+          description: Program to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Program/properties/programId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Program not found
+  /professors:
+    post:
+      tags:
+        - professor
+      summary: Add a new professor to the system
+      operationId: addProfessor
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Professor'
+    get:
+      tags:
+        - professor
+      summary: Get Professors
+      operationId: getProfessors
+      parameters:
+        - name: department
+          in: query
+          description: Department to filter by
+          required: false
+          explode: false
+          schema:
+            $ref: '#/components/schemas/Professor/properties/department'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Professor'
+  '/professors/{professorId}':
+    put:
+      tags:
+        - professor
+      summary: Update an existing professor
+      operationId: updateProfessor
+      parameters:
+        - name: professorId
+          in: path
+          description: ID of professor to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Professor/properties/professorId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Professor not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/Professor'
+    get:
+      tags:
+        - professor
+      summary: Find professor by ID
+      description: Returns a single professor
+      operationId: getProfessor
+      parameters:
+        - name: professorId
+          in: path
+          description: ID of professor to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Professor/properties/professorId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Professor not found
+    delete:
+      tags:
+        - professor
+      summary: Deletes a professor
+      operationId: deleteProfessor
+      parameters:
+        - name: professorId
+          in: path
+          description: Professor to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Professor/properties/professorId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Professor not found
+  /lectures:
+    post:
+      tags:
+        - lecture
+      summary: Add a new lecture to the system
+      operationId: addLecture
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lecture'
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Lecture'
+    get:
+      tags:
+        - lecture
+      summary: Get Lectures
+      operationId: getLectures
+      parameters:
+        - name: course
+          in: query
+          description: Course to filter by
+          required: false
+          explode: false
+          schema:
+            $ref: '#/components/schemas/Course/properties/courseId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lecture'
+  '/lectures/{lectureId}':
+    put:
+      tags:
+        - lecture
+      summary: Update an existing lecture
+      operationId: updateLecture
+      parameters:
+        - name: lectureId
+          in: path
+          description: ID of lecture to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Lecture/properties/lectureId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lecture'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lecture not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/Lecture'
+    get:
+      tags:
+        - lecture
+      summary: Find lecture by ID
+      description: Returns a single lecture
+      operationId: getLecture
+      parameters:
+        - name: lectureId
+          in: path
+          description: ID of lecture to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Lecture/properties/lectureId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lecture'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lecture not found
+    delete:
+      tags:
+        - lecture
+      summary: Deletes a lecture
+      operationId: deleteLecture
+      parameters:
+        - name: lectureId
+          in: path
+          description: Lecture to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Lecture/properties/lectureId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lecture'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Lecture not found
+  /students:
+    post:
+      tags:
+        - student
+      summary: Add a new student to the system
+      operationId: addStudent
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Student'
+    get:
+      tags:
+        - student
+      summary: Get Students
+      operationId: getStudents
+      parameters:
+        - name: program
+          in: query
+          description: Program to filter by
+          required: false
+          explode: false
+          schema:
+            $ref: '#/components/schemas/Student/properties/program'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  '/students/{studentId}':
+    put:
+      tags:
+        - student
+      summary: Update an existing student
+      operationId: updateStudent
+      parameters:
+        - name: studentId
+          in: path
+          description: ID of student to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Student/properties/studentId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/Student'
+    get:
+      tags:
+        - student
+      summary: Find student by ID
+      description: Returns a single student
+      operationId: getStudent
+      parameters:
+        - name: studentId
+          in: path
+          description: ID of student to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Student/properties/studentId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+    delete:
+      tags:
+        - student
+      summary: Deletes a student
+      operationId: deleteStudent
+      parameters:
+        - name: studentId
+          in: path
+          description: Student to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Student/properties/studentId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+  '/students/{studentId}/drop':
+    post:
+      tags:
+        - student
+      summary: Drop a course from the student
+      operationId: drop
+      parameters:
+        - name: studentId
+          in: path
+          description: ID of student to drop course
+          required: true
+          schema:
+            $ref: '#/components/schemas/Student/properties/studentId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/CourseId'
+  /courses:
+    post:
+      tags:
+        - course
+      summary: Add a new course to the system
+      operationId: addCourse
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '405':
+          description: Invalid input
+      requestBody:
+        $ref: '#/components/requestBodies/Course'
+    get:
+      tags:
+        - course
+      summary: Get Courses
+      operationId: getCourses
+      parameters:
+        - name: weekday
+          in: query
+          description: Weekday to filter by
+          required: false
+          explode: false
+          schema:
+            $ref: '#/components/schemas/Course/properties/weekday'
+        - name: location
+          in: query
+          description: Location to filter by
+          required: false
+          explode: false
+          schema:
+            $ref: '#/components/schemas/Course/properties/location'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  '/courses/{courseId}':
+    put:
+      tags:
+        - course
+      summary: Update an existing course
+      operationId: updateCourse
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of course to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Course/properties/courseId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/Course'
+    get:
+      tags:
+        - course
+      summary: Find course by ID
+      description: Returns a single course
+      operationId: getCourse
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of course to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Course/properties/courseId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+    delete:
+      tags:
+        - course
+      summary: Deletes a course
+      operationId: deleteCourse
+      parameters:
+        - name: courseId
+          in: path
+          description: Course to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Course/properties/courseId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not found
+  '/courses/{courseId}/register':
+    post:
+      tags:
+        - course
+      summary: Register a course for the student
+      operationId: register
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of student to register the course
+          required: true
+          schema:
+            $ref: '#/components/schemas/Course/properties/courseId'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not found
+        '405':
+          description: Validation exception
+      requestBody:
+        $ref: '#/components/requestBodies/StudentId'
+components:
+  schemas:
+    Program:
+      type: object
+      properties:
+        programId:
+          type: integer
+          format: int64
+          example: "7631627902618139947"
+        name:
+          type: string
+        info:
+          type: string
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course/properties/courseId'
+    Professor:
+      type: object
+      properties:
+        professorId:
+          type: integer
+          format: int64
+          example: "7631627902618139947"
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        joiningDate:
+          type: string
+          format: date-time
+        department:
+          type: string
+        coursesTaught:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course/properties/courseId'
+    Student:
+      type: object
+      properties:
+        studentId:
+          type: integer
+          format: int64
+          example: "7631627902618139947"
+        firstName:
+          type: string
+        lastName:
+          type: string
+        image:
+          type: string
+        program:
+          $ref: '#/components/schemas/Program/properties/programId'
+        coursesEnrolled:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course/properties/courseId'
+    Lecture:
+      type: object
+      properties:
+        lectureId:
+          type: integer
+          format: int64
+          example: "7631627902618139947"
+        notes:
+          type: string
+        materials:
+          type: array
+          items:
+            type: string
+        course:
+          $ref: '#/components/schemas/Course/properties/courseId'
+    Course:
+      type: object
+      properties:
+        courseId:
+          type: integer
+          format: int64
+          example: "7631627902618139947"
+        name:
+          type: string
+        board:
+          type: string
+        location:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        weekday:
+          type: integer
+          enum: [1, 2, 3, 4, 5, 6, 7]
+        roster:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student/properties/studentId'
+        professor:
+          $ref: '#/components/schemas/Professor/properties/professorId'
+        ta:
+          $ref: '#/components/schemas/Student/properties/studentId'
+        program:
+          $ref: '#/components/schemas/Program/properties/programId'
+  requestBodies:
+    Program:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              info:
+                type: string
+      description: Program object that needs to be added to the system
+      required: true
+    Professor:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: Jerry
+              lastName:
+                type: string
+                example: Brown
+              email:
+                type: string
+                example: test@example.org
+              joiningDate:
+                type: string
+                format: date-time
+              department:
+                type: string
+                example: Economics
+      description: Professor object that needs to be added to the system
+      required: true
+    Lecture:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Lecture'
+      description: Lecture object that needs to be added to the system
+      required: true
+    Student:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: Tom
+              lastName:
+                type: string
+                example: Smith
+              image:
+                type: string
+                example: https://homepages.cae.wisc.edu/~ece533/images/boy.bmp
+              program:
+                $ref: '#/components/schemas/Program/properties/programId'
+      description: Student object that needs to be added to the system
+      required: true
+    Course:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              board:
+                type: string
+              location:
+                type: string
+              startTime:
+                type: string
+                format: date-time
+              endTime:
+                type: string
+                format: date-time
+              weekday:
+                type: integer
+                enum: [1, 2, 3, 4, 5, 6, 7]
+              professor:
+                $ref: '#/components/schemas/Professor/properties/professorId'
+              ta:
+                $ref: '#/components/schemas/Student/properties/studentId'
+              program:
+                $ref: '#/components/schemas/Program/properties/programId'
+      description: Course object that needs to be added to the system
+      required: true
+    CourseId:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              courseId:
+                type: integer
+                format: int64
+                example: "7631627902618139947"
+      description: Course ID that needs to be dropped
+      required: true
+    StudentId:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              studentId:
+                type: integer
+                format: int64
+                example: "7631627902618139947"
+      description: Student ID that needs to be registered
+      required: true
