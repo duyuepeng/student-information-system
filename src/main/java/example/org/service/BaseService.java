@@ -1,39 +1,45 @@
 package example.org.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import example.org.model.PrimaryKey;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 public abstract class BaseService<T, S, R> {
-    protected abstract Map<S, Object> getMap();
 
     protected abstract boolean checkDependency(R obj);
 
-    public List<T> getList(Map<String, String> kwargs) {
-        return (List<T>) new ArrayList<Object>(this.getMap().values()).stream().filter(obj -> {
-            boolean flag = true;
-            for (Map.Entry<String, String> entry : kwargs.entrySet()) {
-                if (entry.getValue() == null)
-                    continue;
-                try {
-                    Method method = obj.getClass().getMethod(
-                            "get" + entry.getKey().substring(0, 1).toUpperCase()
-                                    + entry.getKey().substring(1).toLowerCase());
-                    flag = method.invoke(obj).toString().equals(entry.getValue());
-                    if (!flag)
-                        break;
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
-                }
-            }
+    protected Class<T> mainClass;
+    protected DynamoDBMapper mapper;
 
-            return flag;
-        }).collect(Collectors.toList());
+    public List<T> getList(Map<String, String> kwargs) {
+        Map<String, AttributeValue> eav = new HashMap<>();
+        Map<String, String> ean = new HashMap<>();
+        for (String key : kwargs.keySet()) {
+            if (kwargs.get(key) == null)
+                continue;
+            ean.put("#" + key, key);
+            try {
+                eav.put(":" + key, new AttributeValue().withN(String.valueOf(Long.parseLong(kwargs.get(key)))));
+            } catch (NumberFormatException ignore) {
+                eav.put(":" + key, new AttributeValue().withS(kwargs.get(key)));
+            }
+        }
+
+        if (eav.size() <= 0)
+            return mapper.scan(this.mainClass, new DynamoDBScanExpression());
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+                .withFilterExpression(eav.keySet().stream().map(key -> key.replaceFirst(":", "#") + " = " + key).collect(Collectors.joining(" and ")))
+                .withExpressionAttributeValues(eav).withExpressionAttributeNames(ean);
+
+        return mapper.scan(this.mainClass, scanExpression);
     }
 
     protected T setBasicInfo(R basic, T all) {
@@ -50,7 +56,7 @@ public abstract class BaseService<T, S, R> {
     }
 
     public T get(S pk) {
-        return (T) this.getMap().get(pk);
+        return mapper.load(this.mainClass, pk);
     }
 
     public S generatePk() {
@@ -61,7 +67,7 @@ public abstract class BaseService<T, S, R> {
     }
 
     protected T putItem(S key, T obj) {
-        this.getMap().put(key, obj);
+        mapper.save(obj);
         return obj;
     }
 
@@ -78,7 +84,16 @@ public abstract class BaseService<T, S, R> {
         return this.putItem(pk, (T) newObj);
     }
 
+    protected void deleteDependencies(T obj) {
+
+    }
+
     public T delete(S pk) {
-        return (T) this.getMap().remove(pk);
+        T obj = this.get(pk);
+        if (obj == null)
+            return null;
+        this.deleteDependencies(obj);
+        this.mapper.delete(obj);
+        return obj;
     }
 }

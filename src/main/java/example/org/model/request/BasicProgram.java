@@ -1,7 +1,11 @@
 package example.org.model.request;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 import java.util.Objects;
 
+@DynamoDBTable(tableName = "Program")
 public class BasicProgram {
 
     private String name = null;
@@ -19,6 +23,7 @@ public class BasicProgram {
      *
      * @return name
      **/
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
@@ -37,6 +42,7 @@ public class BasicProgram {
      *
      * @return info
      **/
+    @DynamoDBAttribute(attributeName = "info")
     public String getInfo() {
         return info;
     }
@@ -61,13 +67,11 @@ public class BasicProgram {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BasicProgram {\n");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    info: ").append(toIndentedString(info)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class BasicProgram {\n" +
+                "    name: " + toIndentedString(name) + "\n" +
+                "    info: " + toIndentedString(info) + "\n" +
+                "}";
     }
 
     /**

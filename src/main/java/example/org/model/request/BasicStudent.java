@@ -1,7 +1,11 @@
 package example.org.model.request;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 import java.util.Objects;
 
+@DynamoDBTable(tableName = "Student")
 public class BasicStudent {
     private String firstName = null;
 
@@ -22,6 +26,7 @@ public class BasicStudent {
      *
      * @return firstName
      **/
+    @DynamoDBAttribute(attributeName = "firstName")
     public String getFirstName() {
         return firstName;
     }
@@ -40,6 +45,7 @@ public class BasicStudent {
      *
      * @return lastName
      **/
+    @DynamoDBAttribute(attributeName = "lastName")
     public String getLastName() {
         return lastName;
     }
@@ -58,6 +64,7 @@ public class BasicStudent {
      *
      * @return image
      **/
+    @DynamoDBAttribute(attributeName = "image")
     public String getImage() {
         return image;
     }
@@ -76,6 +83,8 @@ public class BasicStudent {
      *
      * @return program
      **/
+
+    @DynamoDBAttribute(attributeName = "program")
     public Long getProgram() {
         return program;
     }
@@ -108,15 +117,13 @@ public class BasicStudent {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BasicStudent {\n");
 
-        sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
-        sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
-        sb.append("    image: ").append(toIndentedString(image)).append("\n");
-        sb.append("    program: ").append(toIndentedString(program)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class BasicStudent {\n" +
+                "    firstName: " + toIndentedString(firstName) + "\n" +
+                "    lastName: " + toIndentedString(lastName) + "\n" +
+                "    image: " + toIndentedString(image) + "\n" +
+                "    program: " + toIndentedString(program) + "\n" +
+                "}";
     }
 
     /**

@@ -1,19 +1,22 @@
 package example.org.service;
 
-import example.org.database.InMemoryDatabase;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import example.org.database.DynamoDB;
+import example.org.exception.DependencyException;
 import example.org.model.Student;
 import example.org.model.request.BasicStudent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StudentService extends BaseService<Student, Long, BasicStudent> {
     private static ProgramService programService = new ProgramService();
     private static CourseService courseService = new CourseService();
 
-    static HashMap<Long, Object> map = InMemoryDatabase.getDB(Student.class.getName());
+    public StudentService() {
+        this.mainClass = Student.class;
+        this.mapper = new DynamoDBMapper(DynamoDB.client);
+    }
 
     public void addCourseToStudent(Long courseId, Long studentId) {
         Student student = this.get(studentId);
@@ -45,30 +48,10 @@ public class StudentService extends BaseService<Student, Long, BasicStudent> {
         return all;
     }
 
-//    public Student add(BasicStudent student) {
-//        Long pk = this.generatePk();
-//        Student newStudent = new Student();
-//        newStudent.coursesEnrolled(new ArrayList<>()).pk(pk).setBasicStudent(student);
-//        return this.putItem(newStudent.getStudentId(), newStudent);
-//    }
-//
-//    public Student update(BasicStudent student, Long studentId) {
-//        Student oldStudent = this.get(studentId);
-//        if (oldStudent == null)
-//            return null;
-//
-//        return this.putItem(oldStudent.getStudentId(), oldStudent);
-//    }
-
-    @Override
-    protected Map<Long, Object> getMap() {
-        return map;
-    }
-
     @Override
     protected boolean checkDependency(BasicStudent obj) {
         if (programService.get(obj.getProgram()) == null)
-            throw new RuntimeException("Program not exists.");
+            throw new DependencyException("Program " + obj.getProgram() + " not exists.");
         return true;
     }
 

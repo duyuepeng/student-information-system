@@ -1,21 +1,18 @@
 package example.org.service;
 
-import example.org.database.InMemoryDatabase;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import example.org.database.DynamoDB;
 import example.org.model.Professor;
 import example.org.model.request.BasicProfessor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProfessorService extends BaseService<Professor, Long, BasicProfessor> {
 
-    static HashMap<Long, Object> map = InMemoryDatabase.getDB(Professor.class.getName());
-
-    @Override
-    protected Map<Long, Object> getMap() {
-        return map;
+    public ProfessorService() {
+        this.mainClass = Professor.class;
+        this.mapper = new DynamoDBMapper(DynamoDB.client);
     }
 
     @Override
@@ -41,12 +38,6 @@ public class ProfessorService extends BaseService<Professor, Long, BasicProfesso
         this.putItem(professorId, professor);
     }
 
-//    public Professor add(BasicProfessor professor) {
-//        Long pk = this.generatePk();
-//        Professor newProfessor = new Professor();
-//        newProfessor.coursesTaught(new ArrayList<>()).pk(pk).setBasicProfessor(professor);
-//        return this.putItem(newProfessor.getProfessorId(), newProfessor);
-//    }
 
     @Override
     protected Professor setBasicInfo(BasicProfessor basic, Professor all) {
@@ -60,12 +51,4 @@ public class ProfessorService extends BaseService<Professor, Long, BasicProfesso
         return newProfessor.coursesTaught(new ArrayList<>());
     }
 
-
-//    public Professor update(BasicProfessor professor, Long professorId) {
-//        Professor oldProfessor = this.get(professorId);
-//        if (oldProfessor == null)
-//            return null;
-//        oldProfessor.setBasicProfessor(professor);
-//        return this.putItem(oldProfessor.getProfessorId(), oldProfessor);
-//    }
 }

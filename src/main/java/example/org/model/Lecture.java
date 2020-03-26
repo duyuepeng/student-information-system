@@ -1,24 +1,27 @@
 package example.org.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import example.org.model.request.BasicLecture;
+
 import java.util.Objects;
 
 /**
  * Lecture
  */
-public class Lecture implements PrimaryKey<Long, Lecture> {
+@DynamoDBTable(tableName = "Lecture")
+public class Lecture extends BasicLecture implements PrimaryKey<Long, Lecture> {
     private Long lectureId = null;
-
-    private String notes = null;
-
-    private List<String> materials = null;
-
-    private Long course = null;
 
     public Lecture lectureId(Long lectureId) {
         this.lectureId = lectureId;
         return this;
+    }
+
+    public void setBasicLecture(BasicLecture basicLecture) {
+        this.notes(basicLecture.getNotes())
+                .materials(basicLecture.getMaterials())
+                .course(basicLecture.getCourse());
     }
 
     @Override
@@ -41,74 +44,13 @@ public class Lecture implements PrimaryKey<Long, Lecture> {
      *
      * @return lectureId
      **/
+    @DynamoDBHashKey(attributeName = "lectureId")
     public Long getLectureId() {
         return lectureId;
     }
 
     public void setLectureId(Long lectureId) {
         this.lectureId = lectureId;
-    }
-
-    public Lecture notes(String notes) {
-        this.notes = notes;
-        return this;
-    }
-
-    /**
-     * Get notes
-     *
-     * @return notes
-     **/
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public Lecture materials(List<String> materials) {
-        this.materials = materials;
-        return this;
-    }
-
-    public Lecture addMaterialsItem(String materialsItem) {
-        if (this.materials == null) {
-            this.materials = new ArrayList<String>();
-        }
-        this.materials.add(materialsItem);
-        return this;
-    }
-
-    /**
-     * Get materials
-     *
-     * @return materials
-     **/
-    public List<String> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(List<String> materials) {
-        this.materials = materials;
-    }
-
-    /**
-     * Get course
-     *
-     * @return course
-     **/
-    public Long getCourse() {
-        return course;
-    }
-
-    public void setCourse(Long course) {
-        this.course = course;
-    }
-
-    public Lecture course(Long course) {
-        this.course = course;
-        return this;
     }
 
 
@@ -122,28 +64,26 @@ public class Lecture implements PrimaryKey<Long, Lecture> {
         }
         Lecture lecture = (Lecture) o;
         return Objects.equals(this.lectureId, lecture.lectureId) &&
-                Objects.equals(this.notes, lecture.notes) &&
-                Objects.equals(this.materials, lecture.materials) &&
-                Objects.equals(this.course, lecture.course);
+                Objects.equals(this.getNotes(), lecture.getNotes()) &&
+                Objects.equals(this.getMaterials(), lecture.getMaterials()) &&
+                Objects.equals(this.getCourse(), lecture.getCourse());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lectureId, notes, materials, course);
+        return Objects.hash(lectureId, super.hashCode());
     }
 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Lecture {\n");
 
-        sb.append("    lectureId: ").append(toIndentedString(lectureId)).append("\n");
-        sb.append("    notes: ").append(toIndentedString(notes)).append("\n");
-        sb.append("    materials: ").append(toIndentedString(materials)).append("\n");
-        sb.append("    course: ").append(toIndentedString(course)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class Lecture {\n" +
+                "    lectureId: " + toIndentedString(lectureId) + "\n" +
+                "    notes: " + toIndentedString(getNotes()) + "\n" +
+                "    materials: " + toIndentedString(getMaterials()) + "\n" +
+                "    course: " + toIndentedString(getCourse()) + "\n" +
+                "}";
     }
 
     /**

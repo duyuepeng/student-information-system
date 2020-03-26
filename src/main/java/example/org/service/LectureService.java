@@ -1,22 +1,30 @@
 package example.org.service;
 
-import example.org.database.InMemoryDatabase;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import example.org.database.DynamoDB;
+import example.org.exception.DependencyException;
 import example.org.model.Lecture;
+import example.org.model.request.BasicLecture;
 
-import java.util.HashMap;
-import java.util.Map;
+public class LectureService extends BaseService<Lecture, Long, BasicLecture> {
 
-public class LectureService extends BaseService<Lecture, Long, Lecture> {
+    private static CourseService courseService = new CourseService();
 
-    static HashMap<Long, Object> map = InMemoryDatabase.getDB(Lecture.class.getName());
-
-    @Override
-    protected Map<Long, Object> getMap() {
-        return map;
+    public LectureService() {
+        this.mainClass = Lecture.class;
+        this.mapper = new DynamoDBMapper(DynamoDB.client);
     }
 
     @Override
-    protected boolean checkDependency(Lecture obj) {
+    protected Lecture setBasicInfo(BasicLecture basic, Lecture all) {
+        all.setBasicLecture(basic);
+        return all;
+    }
+
+    @Override
+    protected boolean checkDependency(BasicLecture obj) {
+        if (courseService.get(obj.getCourse()) == null)
+            throw new DependencyException("Course " + obj.getCourse() + " not exists.");
         return true;
     }
 }

@@ -1,10 +1,14 @@
 package example.org.service;
 
-import example.org.database.InMemoryDatabase;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import example.org.database.DynamoDB;
+import example.org.exception.DependencyException;
 import example.org.model.Course;
 import example.org.model.request.BasicCourse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class CourseService extends BaseService<Course, Long, BasicCourse> {
 
@@ -12,7 +16,10 @@ public class CourseService extends BaseService<Course, Long, BasicCourse> {
     private static ProgramService programService = new ProgramService();
     private static ProfessorService professorService = new ProfessorService();
 
-    static HashMap<Long, Object> map = InMemoryDatabase.getDB(Course.class.getName());
+    public CourseService() {
+        this.mainClass = Course.class;
+        this.mapper = new DynamoDBMapper(DynamoDB.client);
+    }
 
     public void addStudentToCourse(Long studentId, Long courseId) {
         Course course = this.get(courseId);
@@ -55,18 +62,13 @@ public class CourseService extends BaseService<Course, Long, BasicCourse> {
     }
 
     @Override
-    protected Map<Long, Object> getMap() {
-        return map;
-    }
-
-    @Override
     protected boolean checkDependency(BasicCourse course) {
         if (programService.get(course.getProgram()) == null)
-            throw new RuntimeException("Program not exists.");
+            throw new DependencyException("Program " + course.getProgram() + " not exists.");
         if (studentService.get(course.getTa()) == null)
-            throw new RuntimeException("TA student not exists.");
+            throw new DependencyException("TA student " + course.getTa() + " not exists.");
         if (professorService.get(course.getProfessor()) == null)
-            throw new RuntimeException("Professor not exists.");
+            throw new DependencyException("Professor " + course.getProfessor() + " not exists.");
         return true;
     }
 
@@ -74,5 +76,11 @@ public class CourseService extends BaseService<Course, Long, BasicCourse> {
         this.addStudentToCourse(studentId, courseId);
         studentService.addCourseToStudent(courseId, studentId);
         return this.get(courseId);
+    }
+
+    @Override
+    protected void deleteDependencies(Course course) {
+        programService.removeCourseFromProgram(course.getCourseId(), course.getProgram());
+        professorService.removeCourseFromProfessor(course.getCourseId(), course.getProfessor());
     }
 }

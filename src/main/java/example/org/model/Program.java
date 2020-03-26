@@ -1,5 +1,8 @@
 package example.org.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import example.org.model.request.BasicProgram;
 
 import java.util.ArrayList;
@@ -9,6 +12,8 @@ import java.util.Objects;
 /**
  * Program
  */
+
+@DynamoDBTable(tableName = "Program")
 public class Program extends BasicProgram implements PrimaryKey<Long, Program> {
     private Long programId = null;
 
@@ -44,6 +49,7 @@ public class Program extends BasicProgram implements PrimaryKey<Long, Program> {
      *
      * @return programId
      **/
+    @DynamoDBHashKey(attributeName = "programId")
     public Long getProgramId() {
         return programId;
     }
@@ -71,7 +77,7 @@ public class Program extends BasicProgram implements PrimaryKey<Long, Program> {
 
     public Program addCoursesItem(Long coursesItem) {
         if (this.courses == null) {
-            this.courses = new ArrayList<Long>();
+            this.courses = new ArrayList<>();
         }
         this.courses.add(coursesItem);
         return this;
@@ -82,6 +88,7 @@ public class Program extends BasicProgram implements PrimaryKey<Long, Program> {
      *
      * @return courses
      **/
+    @DynamoDBAttribute(attributeName = "courses")
     public List<Long> getCourses() {
         return courses;
     }
@@ -107,15 +114,13 @@ public class Program extends BasicProgram implements PrimaryKey<Long, Program> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Program {\n");
 
-        sb.append("    programId: ").append(toIndentedString(programId)).append("\n");
-        sb.append("    name: ").append(toIndentedString(this.getName())).append("\n");
-        sb.append("    info: ").append(toIndentedString(this.getInfo())).append("\n");
-        sb.append("    courses: ").append(toIndentedString(courses)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class Program {\n" +
+                "    programId: " + toIndentedString(programId) + "\n" +
+                "    name: " + toIndentedString(this.getName()) + "\n" +
+                "    info: " + toIndentedString(this.getInfo()) + "\n" +
+                "    courses: " + toIndentedString(courses) + "\n" +
+                "}";
     }
 
     /**

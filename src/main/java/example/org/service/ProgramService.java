@@ -1,5 +1,7 @@
 package example.org.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import example.org.database.DynamoDB;
 import example.org.database.InMemoryDatabase;
 import example.org.model.Program;
 import example.org.model.request.BasicProgram;
@@ -7,11 +9,17 @@ import example.org.model.request.BasicProgram;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class ProgramService extends BaseService<Program, Long, BasicProgram> {
 
     static HashMap<Long, Object> map = InMemoryDatabase.getDB(Program.class.getName());
+
+    public ProgramService() {
+        this.mapper = new DynamoDBMapper(DynamoDB.client);
+        this.mainClass = Program.class;
+    }
+
 
     public void addCourseToProgram(Long courseId, Long programId) {
         Program program = this.get(programId);
@@ -43,10 +51,6 @@ public class ProgramService extends BaseService<Program, Long, BasicProgram> {
         return newProgram.courses(new ArrayList<>());
     }
 
-    @Override
-    protected Map<Long, Object> getMap() {
-        return map;
-    }
 
     @Override
     protected boolean checkDependency(BasicProgram program) {

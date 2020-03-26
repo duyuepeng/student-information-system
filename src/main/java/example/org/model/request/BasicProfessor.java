@@ -1,8 +1,12 @@
 package example.org.model.request;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 import java.util.Date;
 import java.util.Objects;
 
+@DynamoDBTable(tableName = "Professor")
 public class BasicProfessor {
 
     private String firstName = null;
@@ -20,6 +24,7 @@ public class BasicProfessor {
      *
      * @return firstName
      **/
+    @DynamoDBAttribute(attributeName = "firstName")
     public String getFirstName() {
         return firstName;
     }
@@ -38,6 +43,7 @@ public class BasicProfessor {
      *
      * @return lastName
      **/
+    @DynamoDBAttribute(attributeName = "lastName")
     public String getLastName() {
         return lastName;
     }
@@ -56,6 +62,7 @@ public class BasicProfessor {
      *
      * @return email
      **/
+    @DynamoDBAttribute(attributeName = "email")
     public String getEmail() {
         return email;
     }
@@ -74,6 +81,7 @@ public class BasicProfessor {
      *
      * @return joiningDate
      **/
+    @DynamoDBAttribute(attributeName = "joiningDate")
     public Date getJoiningDate() {
         return joiningDate;
     }
@@ -92,6 +100,7 @@ public class BasicProfessor {
      *
      * @return department
      **/
+    @DynamoDBAttribute(attributeName = "department")
     public String getDepartment() {
         return department;
     }
@@ -125,16 +134,14 @@ public class BasicProfessor {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BasicProfessor {\n");
 
-        sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
-        sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
-        sb.append("    email: ").append(toIndentedString(email)).append("\n");
-        sb.append("    joiningDate: ").append(toIndentedString(joiningDate)).append("\n");
-        sb.append("    department: ").append(toIndentedString(department)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class BasicProfessor {\n" +
+                "    firstName: " + toIndentedString(firstName) + "\n" +
+                "    lastName: " + toIndentedString(lastName) + "\n" +
+                "    email: " + toIndentedString(email) + "\n" +
+                "    joiningDate: " + toIndentedString(joiningDate) + "\n" +
+                "    department: " + toIndentedString(department) + "\n" +
+                "}";
     }
 
     /**

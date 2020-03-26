@@ -1,5 +1,8 @@
 package example.org.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import example.org.model.request.BasicCourse;
 
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.Objects;
 /**
  * Course
  */
+@DynamoDBTable(tableName = "Course")
 public class Course extends BasicCourse implements PrimaryKey<Long, Course> {
     private Long courseId = null;
 
@@ -52,6 +56,7 @@ public class Course extends BasicCourse implements PrimaryKey<Long, Course> {
      *
      * @return courseId
      **/
+    @DynamoDBHashKey(attributeName = "courseId")
     public Long getCourseId() {
         return courseId;
     }
@@ -103,7 +108,7 @@ public class Course extends BasicCourse implements PrimaryKey<Long, Course> {
 
     public Course addRosterItem(Long rosterItem) {
         if (this.roster == null) {
-            this.roster = new ArrayList<Long>();
+            this.roster = new ArrayList<>();
         }
         this.roster.add(rosterItem);
         return this;
@@ -114,6 +119,7 @@ public class Course extends BasicCourse implements PrimaryKey<Long, Course> {
      *
      * @return roster
      **/
+    @DynamoDBAttribute(attributeName = "roster")
     public List<Long> getRoster() {
         return roster;
     }
@@ -155,22 +161,20 @@ public class Course extends BasicCourse implements PrimaryKey<Long, Course> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Course {\n");
 
-        sb.append("    courseId: ").append(toIndentedString(courseId)).append("\n");
-        sb.append("    name: ").append(toIndentedString(getName())).append("\n");
-        sb.append("    board: ").append(toIndentedString(getBoard())).append("\n");
-        sb.append("    location: ").append(toIndentedString(getLocation())).append("\n");
-        sb.append("    startTime: ").append(toIndentedString(getStartTime())).append("\n");
-        sb.append("    endTime: ").append(toIndentedString(getEndTime())).append("\n");
-        sb.append("    weekday: ").append(toIndentedString(getWeekday())).append("\n");
-        sb.append("    roster: ").append(toIndentedString(roster)).append("\n");
-        sb.append("    professor: ").append(toIndentedString(getProfessor())).append("\n");
-        sb.append("    ta: ").append(toIndentedString(getTa())).append("\n");
-        sb.append("    program: ").append(toIndentedString(getProgram())).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class Course {\n" +
+                "    courseId: " + toIndentedString(courseId) + "\n" +
+                "    name: " + toIndentedString(getName()) + "\n" +
+                "    board: " + toIndentedString(getBoard()) + "\n" +
+                "    location: " + toIndentedString(getLocation()) + "\n" +
+                "    startTime: " + toIndentedString(getStartTime()) + "\n" +
+                "    endTime: " + toIndentedString(getEndTime()) + "\n" +
+                "    weekday: " + toIndentedString(getWeekday()) + "\n" +
+                "    roster: " + toIndentedString(roster) + "\n" +
+                "    professor: " + toIndentedString(getProfessor()) + "\n" +
+                "    ta: " + toIndentedString(getTa()) + "\n" +
+                "    program: " + toIndentedString(getProgram()) + "\n" +
+                "}";
     }
 
     /**

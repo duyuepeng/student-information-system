@@ -1,5 +1,8 @@
 package example.org.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import example.org.model.request.BasicStudent;
 
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ import java.util.Objects;
 /**
  * Student
  */
+@DynamoDBTable(tableName = "Student")
 public class Student extends BasicStudent implements PrimaryKey<Long, Student> {
     private Long studentId = null;
 
@@ -26,6 +30,12 @@ public class Student extends BasicStudent implements PrimaryKey<Long, Student> {
         return this;
     }
 
+    /**
+     * Get studentId
+     *
+     * @return studentId
+     **/
+    @DynamoDBHashKey(attributeName = "studentId")
     public Long getStudentId() {
         return studentId;
     }
@@ -81,17 +91,18 @@ public class Student extends BasicStudent implements PrimaryKey<Long, Student> {
 
     public Student addCoursesEnrolledItem(Long courseEnrolled) {
         if (this.coursesEnrolled == null) {
-            this.coursesEnrolled = new ArrayList<Long>();
+            this.coursesEnrolled = new ArrayList<>();
         }
         this.coursesEnrolled.add(courseEnrolled);
         return this;
     }
 
     /**
-     * Get Long
+     * Get coursesEnrolled
      *
-     * @return Long
+     * @return coursesEnrolled
      **/
+    @DynamoDBAttribute(attributeName = "coursesEnrolled")
     public List<Long> getCoursesEnrolled() {
         return coursesEnrolled;
     }
@@ -118,17 +129,15 @@ public class Student extends BasicStudent implements PrimaryKey<Long, Student> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Student {\n");
 
-        sb.append("    studentId: ").append(toIndentedString(studentId)).append("\n");
-        sb.append("    firstName: ").append(toIndentedString(this.getFirstName())).append("\n");
-        sb.append("    lastName: ").append(toIndentedString(this.getLastName())).append("\n");
-        sb.append("    image: ").append(toIndentedString(this.getImage())).append("\n");
-        sb.append("    program: ").append(toIndentedString(this.getProgram())).append("\n");
-        sb.append("    Long: ").append(toIndentedString(coursesEnrolled)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class Student {\n" +
+                "    studentId: " + toIndentedString(studentId) + "\n" +
+                "    firstName: " + toIndentedString(this.getFirstName()) + "\n" +
+                "    lastName: " + toIndentedString(this.getLastName()) + "\n" +
+                "    image: " + toIndentedString(this.getImage()) + "\n" +
+                "    program: " + toIndentedString(this.getProgram()) + "\n" +
+                "    Long: " + toIndentedString(coursesEnrolled) + "\n" +
+                "}";
     }
 
     /**

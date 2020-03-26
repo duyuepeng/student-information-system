@@ -1,8 +1,12 @@
 package example.org.model.request;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 import java.util.Date;
 import java.util.Objects;
 
+@DynamoDBTable(tableName = "Course")
 public class BasicCourse {
     private String name = null;
 
@@ -33,6 +37,7 @@ public class BasicCourse {
      *
      * @return name
      **/
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
@@ -51,6 +56,7 @@ public class BasicCourse {
      *
      * @return board
      **/
+    @DynamoDBAttribute(attributeName = "board")
     public String getBoard() {
         return board;
     }
@@ -69,6 +75,8 @@ public class BasicCourse {
      *
      * @return location
      **/
+
+    @DynamoDBAttribute(attributeName = "location")
     public String getLocation() {
         return location;
     }
@@ -87,6 +95,7 @@ public class BasicCourse {
      *
      * @return startTime
      **/
+    @DynamoDBAttribute(attributeName = "startTime")
     public Date getStartTime() {
         return startTime;
     }
@@ -105,6 +114,8 @@ public class BasicCourse {
      *
      * @return endTime
      **/
+
+    @DynamoDBAttribute(attributeName = "endTime")
     public Date getEndTime() {
         return endTime;
     }
@@ -123,6 +134,8 @@ public class BasicCourse {
      *
      * @return weekday
      **/
+
+    @DynamoDBAttribute(attributeName = "weekday")
     public Integer getWeekday() {
         return weekday;
     }
@@ -142,6 +155,7 @@ public class BasicCourse {
      *
      * @return professor
      **/
+    @DynamoDBAttribute(attributeName = "professor")
     public Long getProfessor() {
         return professor;
     }
@@ -160,6 +174,7 @@ public class BasicCourse {
      *
      * @return ta
      **/
+    @DynamoDBAttribute(attributeName = "ta")
     public Long getTa() {
         return ta;
     }
@@ -175,10 +190,11 @@ public class BasicCourse {
     }
 
     /**
-     * Get ta
+     * Get program
      *
-     * @return ta
+     * @return program
      **/
+    @DynamoDBAttribute(attributeName = "program")
     public Long getProgram() {
         return program;
     }
@@ -210,20 +226,18 @@ public class BasicCourse {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BasicCourse {\n");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    board: ").append(toIndentedString(board)).append("\n");
-        sb.append("    location: ").append(toIndentedString(location)).append("\n");
-        sb.append("    startTime: ").append(toIndentedString(startTime)).append("\n");
-        sb.append("    endTime: ").append(toIndentedString(endTime)).append("\n");
-        sb.append("    weekday: ").append(toIndentedString(weekday)).append("\n");
-        sb.append("    professor: ").append(toIndentedString(professor)).append("\n");
-        sb.append("    ta: ").append(toIndentedString(ta)).append("\n");
-        sb.append("    program: ").append(toIndentedString(program)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class BasicCourse {\n" +
+                "    name: " + toIndentedString(name) + "\n" +
+                "    board: " + toIndentedString(board) + "\n" +
+                "    location: " + toIndentedString(location) + "\n" +
+                "    startTime: " + toIndentedString(startTime) + "\n" +
+                "    endTime: " + toIndentedString(endTime) + "\n" +
+                "    weekday: " + toIndentedString(weekday) + "\n" +
+                "    professor: " + toIndentedString(professor) + "\n" +
+                "    ta: " + toIndentedString(ta) + "\n" +
+                "    program: " + toIndentedString(program) + "\n" +
+                "}";
     }
 
     /**

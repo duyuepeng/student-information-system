@@ -1,5 +1,8 @@
 package example.org.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import example.org.model.request.BasicProfessor;
 
 import java.util.ArrayList;
@@ -10,6 +13,8 @@ import java.util.Objects;
 /**
  * Professor
  */
+
+@DynamoDBTable(tableName = "Professor")
 public class Professor extends BasicProfessor implements PrimaryKey<Long, Professor> {
     private Long professorId = null;
 
@@ -48,6 +53,7 @@ public class Professor extends BasicProfessor implements PrimaryKey<Long, Profes
      *
      * @return professorId
      **/
+    @DynamoDBHashKey(attributeName = "professorId")
     public Long getProfessorId() {
         return professorId;
     }
@@ -88,7 +94,7 @@ public class Professor extends BasicProfessor implements PrimaryKey<Long, Profes
 
     public Professor addCoursesTaughtItem(Long coursesTaughtItem) {
         if (this.coursesTaught == null) {
-            this.coursesTaught = new ArrayList<Long>();
+            this.coursesTaught = new ArrayList<>();
         }
         this.coursesTaught.add(coursesTaughtItem);
         return this;
@@ -99,6 +105,7 @@ public class Professor extends BasicProfessor implements PrimaryKey<Long, Profes
      *
      * @return coursesTaught
      **/
+    @DynamoDBAttribute(attributeName = "coursesTaught")
     public List<Long> getCoursesTaught() {
         return coursesTaught;
     }
@@ -124,18 +131,16 @@ public class Professor extends BasicProfessor implements PrimaryKey<Long, Profes
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Professor {\n");
 
-        sb.append("    professorId: ").append(toIndentedString(professorId)).append("\n");
-        sb.append("    firstName: ").append(toIndentedString(this.getFirstName())).append("\n");
-        sb.append("    lastName: ").append(toIndentedString(getLastName())).append("\n");
-        sb.append("    email: ").append(toIndentedString(getEmail())).append("\n");
-        sb.append("    joiningDate: ").append(toIndentedString(getJoiningDate())).append("\n");
-        sb.append("    department: ").append(toIndentedString(getDepartment())).append("\n");
-        sb.append("    coursesTaught: ").append(toIndentedString(coursesTaught)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return "class Professor {\n" +
+                "    professorId: " + toIndentedString(professorId) + "\n" +
+                "    firstName: " + toIndentedString(this.getFirstName()) + "\n" +
+                "    lastName: " + toIndentedString(getLastName()) + "\n" +
+                "    email: " + toIndentedString(getEmail()) + "\n" +
+                "    joiningDate: " + toIndentedString(getJoiningDate()) + "\n" +
+                "    department: " + toIndentedString(getDepartment()) + "\n" +
+                "    coursesTaught: " + toIndentedString(coursesTaught) + "\n" +
+                "}";
     }
 
     /**
